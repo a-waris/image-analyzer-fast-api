@@ -8,7 +8,7 @@ client = TestClient(app)
 
 def test_composition_analysis():
     # Use a sample image from the tests/data directory for testing
-    with open("./data/symmetric_image.jpeg", "rb") as img_file:
+    with open("tests/data/symmetric_image.jpeg", "rb") as img_file:
         response = client.post("/composition-analysis", files={"file": img_file.read()})
     assert response.status_code == 200
     json_data = response.json()
@@ -20,7 +20,7 @@ def test_composition_analysis():
 
 def test_analyze():
     # Use a sample image from the tests/data directory for testing
-    with open("./data/high_variance_image.jpeg", "rb") as img_file:
+    with open("tests/data/high_variance_image.jpeg", "rb") as img_file:
         response = client.post("/analyze", data={"brand_color": "#FF5733"}, files={"file": img_file.read()})
     assert response.status_code == 200
     json_data = response.json()
