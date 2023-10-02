@@ -1,0 +1,23 @@
+# Python Artifacts
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual Environments
+.venv/
+venv/
+.env/
+Pipfile.lock
+
+# IDEs and Editors
+.idea/
+.vscode/
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Others
+*.log
+*.tmp
