@@ -11,6 +11,7 @@ from numpy import fliplr, var, sum
 from pydantic import BaseModel
 from sklearn.cluster import KMeans
 from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import StreamingResponse
 
 
 # Define Pydantic models for request and response validation
@@ -190,5 +191,29 @@ async def analyze_ad_image(file: UploadFile = Form(...), brand_color: Optional[s
         }
 
         return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/generate-high-variation-image")
+async def generate_high_variation_image(width: int = 100, height: int = 100):
+    try:
+        # Generate a grid of alternating 0s and 1s
+        x, y = np.indices((width, height))
+        data = (x + y) % 2 * 255  # Alternates between 0 and 255
+
+        # Stack to get an RGB image
+        data = np.stack([data] * 3, axis=-1)
+
+        # Convert the array to an image
+        image = Image.fromarray(data.astype(np.uint8))
+
+        # Save the image to a bytes buffer
+        img_byte_arr = io.BytesIO()
+        image.save(img_byte_arr, format='JPEG')
+        img_byte_arr.seek(0)
+
+        # Return the image as a response
+        return StreamingResponse(img_byte_arr, media_type="image/jpeg")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
