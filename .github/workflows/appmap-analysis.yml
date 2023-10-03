@@ -1,0 +1,40 @@
+name: appmap-analysis
+
+# Define the event that triggers the workflow
+on: [ push, pull_request ]
+
+# Define the jobs
+jobs:
+  test:
+    # Specify the type of runner
+    runs-on: ubuntu-latest
+
+    # Define the steps for the job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install AppMap tools
+        id: install-appmap
+        uses: getappmap/install-action@v1
+        with:
+          project-type: pipenv
+
+      - name: Run tests
+        run: |
+          pytest tests/
+
+      - name: Archive AppMaps
+        uses: getappmap/archive-action@v1
+        with:
+          revision: ${{ github.event.pull_request.base.sha }}
