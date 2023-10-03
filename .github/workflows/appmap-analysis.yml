@@ -6,8 +6,8 @@ on:
   push:
     branches:
       - main # Change this to the name of the mainline branch
-  schedule:
-    - cron: '0 0 * * 0'
+#  schedule:
+#    - cron: '0 0 * * 0'
 
 # Define the jobs
 jobs:
