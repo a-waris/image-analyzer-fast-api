@@ -1,7 +1,13 @@
 name: appmap-analysis
 
 # Define the event that triggers the workflow
-on: [ push, pull_request ]
+on:
+  pull_request:
+  push:
+    branches:
+      - main # Change this to the name of the mainline branch
+  schedule:
+    - cron: '0 0 * * 0'
 
 # Define the jobs
 jobs:
@@ -34,7 +40,19 @@ jobs:
         run: |
           pytest tests/
 
-      - name: Archive AppMaps
-        uses: getappmap/archive-action@v1
+      - name: Save AppMaps
+        uses: actions/cache/save@v3
+        if: always()
         with:
-          revision: ${{ github.event.pull_request.base.sha }}
+          path: ${{ steps.install-appmap.outputs.appmap-dir }}
+          key: appmaps-${{ github.sha }}-${{ github.run_attempt }}
+
+  appmap-analysis:
+    if: always()
+    needs: [test] # You may need to change this to match the name of the step that runs your tests.
+    uses: getappmap/analyze-action/.github/workflows/appmap-analysis.yml@v1
+    permissions:
+      actions: read
+      contents: read
+      checks: write
+      pull-requests: write
