@@ -1,7 +1,37 @@
 name: CI
 
-# Define the event that triggers the workflow
-on: [ push, pull_request ]
+on:
+  # Run on pull request, so that the PR can be analyzed.
+  pull_request:
+
+    # Run on merge to the base branch, so that the baseline
+    # AppMap archive can be brought up-to-date.
+    # If your base branch is not 'main', (e.g. 'master', 'develop'),
+    # change this accordingly.
+    push:
+      branches:
+        - main
+
+    # Run weekly, so that the baseline AppMap artifact does not expire.
+    schedule:
+      - cron: '0 0 * * 0'
+
+permissions:
+  # Read the baseline artifact in order to perform
+  # the AppMap comparison.
+  actions: read
+
+  # Commit the AppMap configuration.
+  # If the EndBug/add-and-commit is removed,
+  # this can be changed to 'read'.
+  contents: write
+
+  # Add check annotations to the source code when
+  # a problem is detected.
+  checks: write
+
+  # Add a comment to the pull request.
+  pull-requests: write
 
 # Define the jobs
 jobs:
@@ -13,6 +43,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          # Checkout pull request head so that a commit can be made
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -24,6 +57,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Begin install-action snippet
+      #
+      - name: Install AppMap tools
+        id: install-appmap
+        uses: getappmap/install-action@v1
+        with:
+          project-type: pip
+          build-patch-file: false
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+      #
+      # End install-action snippet
+
       - name: Run tests
         run: |
           pytest tests/
+          
+      - name: Archive AppMaps
+        uses: getappmap/archive-action@v1
+        with:
+          revision: ${{ github.event.pull_request.base.sha }}
