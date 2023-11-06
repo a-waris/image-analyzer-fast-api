@@ -4,17 +4,17 @@ on:
   # Run on pull request, so that the PR can be analyzed.
   pull_request:
 
-    # Run on merge to the base branch, so that the baseline
-    # AppMap archive can be brought up-to-date.
-    # If your base branch is not 'main', (e.g. 'master', 'develop'),
-    # change this accordingly.
-    push:
-      branches:
-        - main
+  # Run on merge to the base branch, so that the baseline
+  # AppMap archive can be brought up-to-date.
+  # If your base branch is not 'main', (e.g. 'master', 'develop'),
+  # change this accordingly.
+  push:
+    branches:
+      - main
 
-    # Run weekly, so that the baseline AppMap artifact does not expire.
-    schedule:
-      - cron: '0 0 * * 0'
+  # Run weekly, so that the baseline AppMap artifact does not expire.
+  schedule:
+    - cron: '0 0 * * 0'
 
 permissions:
   # Read the baseline artifact in order to perform

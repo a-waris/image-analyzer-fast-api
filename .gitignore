@@ -23,8 +23,5 @@ desktop.ini
 *.tmp
 
 
-# AppMap artifacts
-/.appmap
-
 # Node modules
 /node_modules
