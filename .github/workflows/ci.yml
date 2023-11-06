@@ -61,3 +61,11 @@ jobs:
       - name: Run tests
         run: |
           pytest tests/
+      
+      # Begin AppMap bootstrap archive step
+      - name: Archive AppMaps
+        id: appmap-bootstrap-archive-appmaps
+        uses: getappmap/archive-action@v1
+        with:
+          revision: ${{ github.event.pull_request.base.sha }}
+      # End AppMap bootstrap archive step
