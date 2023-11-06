@@ -21,3 +21,10 @@ desktop.ini
 # Others
 *.log
 *.tmp
+
+
+# AppMap artifacts
+/.appmap
+
+# Node modules
+/node_modules
