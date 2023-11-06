@@ -1,6 +1,0 @@
-appmap_dir: tmp/appmap
-language: python
-name: image-analyzer-fast-api
-packages:
-  - path: tests
-  - path: app
