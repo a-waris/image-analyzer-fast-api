@@ -1,37 +1,7 @@
 name: CI
 
-on:
-  # Run on pull request, so that the PR can be analyzed.
-  pull_request:
-
-  # Run on merge to the base branch, so that the baseline
-  # AppMap archive can be brought up-to-date.
-  # If your base branch is not 'main', (e.g. 'master', 'develop'),
-  # change this accordingly.
-  push:
-    branches:
-      - main
-
-  # Run weekly, so that the baseline AppMap artifact does not expire.
-  schedule:
-    - cron: '0 0 * * 0'
-
-permissions:
-  # Read the baseline artifact in order to perform
-  # the AppMap comparison.
-  actions: read
-
-  # Commit the AppMap configuration.
-  # If the EndBug/add-and-commit is removed,
-  # this can be changed to 'read'.
-  contents: write
-
-  # Add check annotations to the source code when
-  # a problem is detected.
-  checks: write
-
-  # Add a comment to the pull request.
-  pull-requests: write
+# Define the event that triggers the workflow
+on: [ push, pull_request ]
 
 # Define the jobs
 jobs:
@@ -57,21 +27,3 @@ jobs:
       - name: Run tests
         run: |
           pytest tests/
-    
-      - name: Save AppMaps
-        uses: actions/cache/save@v3
-        if: always()
-        with:
-          path: ./tmp/appmap
-          key: appmaps-${{ github.sha }}-${{ github.run_attempt }}
-
-  appmap-analysis:
-    if: always()
-    needs: [test] # You may need to change this to match
-                  # the name of the step that runs your tests.
-    uses: getappmap/analyze-action/.github/workflows/appmap-analysis.yml@v1
-    permissions:
-      actions: read
-      contents: read
-      checks: write
-      pull-requests: write
