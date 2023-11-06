@@ -1,7 +1,13 @@
 name: CI
 
 # Define the event that triggers the workflow
-on: [ push, pull_request ]
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 0'
 
 # Define the permissions for the workflow
 permissions: 
