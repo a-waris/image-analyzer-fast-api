@@ -58,7 +58,7 @@ jobs:
         run: |
           pytest tests/
     
-          - name: Save AppMaps
+      - name: Save AppMaps
         uses: actions/cache/save@v3
         if: always()
         with:
